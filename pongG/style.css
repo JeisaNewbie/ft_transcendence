@@ -1,0 +1,40 @@
+.body {
+	font-size: 2rem;
+	text-align: center;
+	color: white;
+	background: white;
+	border-radius: 1rem;
+	padding: 2rem;
+	transition: all 0.5s ease;
+  }
+
+.pressed {
+	background: tomato;
+	color: aqua;
+	transform: scale(1.2);
+}
+
+.grid-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+  }
+  
+  .grid-item {
+	/* background-color: #ddd; */
+	/* border: 1px solid #999; */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+  
+  .grid-item:nth-child(7),
+  .grid-item:nth-child(8),
+  .grid-item:nth-child(9) {
+	grid-column: 3; /* 우측 열 */
+	grid-row: 3; /* 하단 행 */
+}
+
+.arrow-key{
+	margin: 0;
+}
