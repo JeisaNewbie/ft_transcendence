@@ -16,25 +16,31 @@
 
 .grid-container {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: repeat(3, 1fr);
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(4, 1fr);
   }
-  
-  .grid-item {
-	/* background-color: #ddd; */
-	/* border: 1px solid #999; */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-  }
-  
-  .grid-item:nth-child(7),
-  .grid-item:nth-child(8),
-  .grid-item:nth-child(9) {
-	grid-column: 3; /* 우측 열 */
-	grid-row: 3; /* 하단 행 */
+
+.grid-item {
+/* background-color: #ddd; */
+/* border: 1px solid #999; */
+display: flex;
+justify-content: center;
+align-items: center;
 }
 
-.arrow-key{
+/* .grid-item:nth-child(14),
+.grid-item:nth-child(15), */
+.grid-item:nth-child(16) {
+grid-column: 4; /* 우측 열 */
+grid-row: 4; /* 하단 행 */
+}
+
+.arrow-key {
 	margin: 0;
+	box-sizing: border-box;
+}
+
+.arrow-up {
+	margin: 0;
+	justify-content: center;
 }
