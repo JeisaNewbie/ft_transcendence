@@ -1,3 +1,5 @@
+var error_code = 0;
+
 function addListener(elem, ev, listener) {
 	elem.addEventListener(ev, listener, false);
 }
@@ -170,7 +172,7 @@ function signUp() {
 function logIn42() {
 	let method = document.getElementById('42login-button-form').getAttribute('method');
 
-	sendHttpRequest(method, 'URL', '', twoFactorAuth, showLogIn);
+	sendHttpRequest(method, '', '', loadHome, showLogIn);
 }
 
 function sendHttpRequest(method, url, body, success, fail) {
@@ -186,8 +188,13 @@ function sendHttpRequest(method, url, body, success, fail) {
 			return success();
 		}
 		if (response.status == 302) {
-			let json = JSON.parse(response.json());
-			sendHttpRequest(method, json.Location, body);
+			sendHttpRequest (method, response.url, body, setToken, doFail);
+			if (error_code == 1)
+				return (error_code == 0);
+			else {
+				sendHttpRequest (method, url, body, loadHome, doFail); // fail시 문제 고려(ex 서버 에러등)
+				return ;
+			}
 		}
 		const refresh = getCookie('refresh');
 		if (response.status == 401 && refresh) {
@@ -213,6 +220,16 @@ function sendHttpRequest(method, url, body, success, fail) {
 	})
 }
 
+function setToken() {
+	const token = searchParam('token');
+
+	if (token)
+		localStorage.setItem('access');
+}
+
+function searchParam(key) {
+	return new URLSearchParams(location.search).get(key);
+}
 
 function asynSend(method, url) {
 	let	req =  new XMLHttpRequest();
@@ -253,6 +270,8 @@ function loadHome() {
 	let div_main = makeTag('div', ['id', 'home-form']);
 	let div_header = makeTag('div', ['id', 'home-header'], ['class', 'home-nav']);
 	let div_body = makeTag('div', ['id', 'home-body'], ['class', 'home-wrapper']);
+
+	window.alert('loadHome called');
 }
 
 
@@ -301,6 +320,10 @@ function event() {
 				key[i].classList.remove('pressed');
 		}
 	});
+}
+
+function doFail() {
+	return (error_code = 1);
 }
 
 function serializeEvent(e) {

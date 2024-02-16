@@ -1,0 +1,64 @@
+.default {
+	background-color: aquamarine;
+}
+
+.start {
+	display: flex;
+	flex-direction: column;
+}
+
+.nav {
+	display: flex;
+}
+
+.result {
+	display: flex;
+}
+
+.flex-item {
+	flex-grow: 1;
+}
+
+.blue {
+	background-color: rgb(103, 178, 244);
+}
+
+.red {
+	background-color: rgb(234, 69, 69);
+}
+
+.green {
+	background-color: rgb(74, 179, 74);
+}
+
+.black {
+	background-color: rgb(72, 70, 70);
+}
+
+.font-blue {
+	font: rgb(103, 244, 171);
+	font-size: large;
+	justify-content: center;
+	align-items: center;
+}
+
+.font-red {
+	font: rgb(69, 102, 234);
+	font-size: large;
+	justify-content: center;
+	align-items: center;
+}
+
+.font-green {
+	font: rgb(135, 179, 74);
+	font-size: large;
+	justify-content: center;
+	align-items: center;
+}
+
+.font-black {
+	font: rgb(70, 72, 72);
+	font-size: large;
+	justify-content: center;
+	align-items: center;
+}
