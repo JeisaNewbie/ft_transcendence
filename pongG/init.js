@@ -30,57 +30,46 @@ function showLogIn() {
 
 	let main = makeTag('div', ['id', 'main']);
 	let div_main = makeTag('div', ['id', 'login-form']);
-	let	div_header = makeTag('div', ['id', 'login-header']);
-	let div_body = makeTag('div', ['id', 'login-body']);
+	let	div_header = makeTag('div', ['id', 'login-header'], ['class', 'logo']);
+	let div_body = makeTag('div', ['id', 'login-body'], ['class', 'login-wrapper']);
 
-	div_header.classList.add('logo');
 	div_header.innerHTML = "Pong Game";
 	div_header.appendChild(makeTag('div', ['id', 'result']));
 
-	div_body.classList.add('login-wrapper')
-
-	let form = makeTag('form', ['onsubmit', "return logIn();"], ['action', 'URL'], ['method', 'post']);
-	form.classList.add('login-body-form');
+	let form = makeTag('form', ['id', 'sign-in-form'], ['class', 'login-body-form'], ['onsubmit', "return logIn();"], ['method', 'post']);
 
 	let	div = makeTag('div');
-	let input = makeTag('input', ['id', 'username'], ['type', 'text'], ['placeholder', 'Enter your name']);
-	input.classList.add('username');
+	let input = makeTag('input', ['class', 'username'], ['id', 'username'], ['type', 'text'], ['placeholder', 'Enter your name']);
 	div.appendChild(input);
 	form.appendChild(div);
 
 	div = makeTag('div');
-	input = makeTag('input', ['id', 'password'], ['type', 'password'], ['placeholder', 'Enter your password']);
-	input.classList.add('password');
+	input = makeTag('input', ['class', 'password'], ['id', 'password'], ['type', 'password'], ['placeholder', 'Enter your password']);
 	div.appendChild(input);
 	form.appendChild(div);
 
-	div = makeTag('div', ['id', 'signin_button']);
+	div = makeTag('div', ['class', 'login-button'], ['id', 'signin-button']);
 	input = makeTag('input', ['type', 'hidden']); //사용자가 알 필요 없는 값을 서버에 보낼때 필요
 	div.appendChild(input);
 	input = makeTag('input', ['type', 'submit'], ['value', 'Sign In']);
 	input.setAttribute('style', 'width: 100%');
 	div.appendChild(input);
-	div.classList.add('login-button');
 	form.appendChild(div);
 	div_body.appendChild(form);
 
-	form = makeTag('form', ['onsubmit', "return showSignUp();"]);
-	form.classList.add('login-body-form');
-	div = makeTag('div', ['id', 'signup-button']);
+	form = makeTag('form', ['id', 'signup-button-form'], ['class', 'login-body-form'], ['onsubmit', "return showSignUp();"]);
+	div = makeTag('div', ['class', 'signup-button'], ['id', 'signup-button']);
 	input = makeTag('input', ['type', 'submit'], ['value', 'Sign Up']);
 	input.setAttribute('style', 'width: 100%');
 	div.appendChild(input);
-	div.classList.add('signup-button');
 	form.appendChild(div);
 	div_body.appendChild(form);
 
-	form = makeTag('form', ['action', 'https://auth.42.fr/auth/realms/students-42/login-actions/authenticate?execution=e3ed291b-5578-4fcf-9f1a-d38a1ee483af&client_id=intra&tab_id=T11vR6Sh9g4'],['method', 'get']);
-	form.classList.add('login-body-form');
-	div = makeTag('div', ['id', '42login-button']);
+	form = makeTag('form', ['id', '42login-button-form'], ['class', 'login-body-form'], ['action', 'https://auth.42.fr/auth/realms/students-42/login-actions/authenticate?execution=e3ed291b-5578-4fcf-9f1a-d38a1ee483af&client_id=intra&tab_id=T11vR6Sh9g4'],['method', 'get']);
+	div = makeTag('div', ['class', 'ftlogin-button'], ['id', '42login-button']);
 	input = makeTag('input', ['type', 'submit'], ['value', '42Log In']);
 	input.setAttribute('style', 'width: 100%');
 	div.appendChild(input);
-	div.classList.add('ftlogin-button');
 	form.appendChild(div);
 	div_body.appendChild(form);
 
@@ -109,41 +98,33 @@ function showSignUp() {
 	if (login_form) document.getElementById('main').removeChild(login_form);
 
 	let div_main = makeTag('div', ['id', 'signup-form']);
-	let	div_header = makeTag('div', ['id', 'signup-header']);
-	let div_body = makeTag('div', ['id', 'signup-body']);
+	let	div_header = makeTag('div', ['class', 'logo'], ['id', 'signup-header']);
+	let div_body = makeTag('div', ['class', 'login-wrapper'], ['id', 'signup-body']);
 
-	div_header.classList.add('logo');
 	div_header.innerHTML = "Pong Game";
 	div_header.appendChild(makeTag('div', ['id', 'result']));
 
-	div_body.classList.add('login-wrapper')
-
-	let form = makeTag('form', ['onsubmit', 'return signUp();'], ['action', 'URL/user_database'], ['method', 'post']);
-	form.classList.add('login-body-form');
+	let form = makeTag('form', ['class', 'login-body-form'], ['onsubmit', 'return signUp();'], ['method', 'post']);
 
 	let	div = makeTag('div');
-	let input = makeTag('input', ['id', 'username'], ['type', 'text'], ['placeholder', 'Enter your name']);
-	input.classList.add('username');
+	let input = makeTag('input', ['class', 'username'], ['id', 'username'], ['type', 'text'], ['placeholder', 'Enter your name']);
 	div.appendChild(input);
 	form.appendChild(div);
 
 	div = makeTag('div');
-	input = makeTag('input', ['id', 'password'], ['type', 'password'], ['placeholder', 'Enter your password']);
-	input.classList.add('password');
+	input = makeTag('input', ['class', 'password'], ['id', 'password'], ['type', 'password'], ['placeholder', 'Enter your password']);
 	div.appendChild(input);
 	form.appendChild(div);
 
 	div = makeTag('div');
-	input = makeTag('input', ['id', 'nickname'], ['type', 'text'], ['placeholder', 'Enter your Nickname']);
-	input.classList.add('username');
+	input = makeTag('input', ['class', 'username'], ['id', 'nickname'], ['type', 'text'], ['placeholder', 'Enter your Nickname']);
 	div.appendChild(input);
 	form.appendChild(div);
 
-	div = makeTag('div', ['id', 'signup']);
+	div = makeTag('div', ['class', 'login-button'], ['id', 'signup']);
 	input = makeTag('input', ['type', 'submit'], ['value', 'Sign Up']);
 	input.setAttribute('style', 'width: 100%; height: 50px;');
 	div.appendChild(input);
-	div.classList.add('login-button');
 	form.appendChild(div);
 
 	div_body.appendChild(form);
@@ -171,9 +152,9 @@ function logIn() {
 function signUp() {
 	let id = document.getElementById('username').value;
 	let pw = document.getElementById('password').value;
-	let nm = document.getElementById('nickname').value;
+	let nn = document.getElementById('nickname').value;
 
-	if (!id || !pw || !nm)
+	if (!id || !pw || !nn)
 	{
 		window.alert ("Please Enter All");
 		return false;
@@ -254,7 +235,12 @@ function asynSend(method, url) {
 }
 
 function loadHome() {
+	let main_first = document.getElementById('main').firstChild;
+	document.getElementById('main').removeChild(main_first);
 
+	let div_main = makeTag('div', ['id', 'home-form']);
+	let div_header = makeTag('div', ['id', 'home-header'], ['class', 'home-nav']);
+	let div_body = makeTag('div', ['id', 'home-body'], ['class', 'home-wrapper']);
 }
 
 
