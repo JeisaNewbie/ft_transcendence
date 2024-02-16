@@ -164,7 +164,7 @@ function logIn() {
 	}
 
 	let url = document.getElementById('login-body').firstChild.getAttribute('action');
-	asynSend('POST', url, [id, pw]);
+	sendHttpRequest('POST', url, [id, pw], loadHome, asynSend);
 	return true;
 }
 
@@ -180,8 +180,81 @@ function signUp() {
 	}
 
 	let url = document.getElementById('signup-body').firstChild.getAttribute('action');
-	asynSend('POST', url, [id, pw, nm]);
+	sendHttpRequest('POST', url, [id, pw], showLogIn, asynSend);
 	return true;
+}
+
+function sendHttpRequest(method, url, body, success, fail) {
+	fetch(url, {
+		method: method,
+		headers: {
+			Authorization: 'Bearer' + localStorage.getItem('access'),
+			'Content-Type': 'application/json'
+		},
+		body: body
+	}).then ((response) => {
+		if (response.status == 200 || response.status == 201) {
+			return success();
+		}
+		const refresh = getCookie('refresh');
+		if (response.status == 401 && refresh) {
+			fetch (url, {
+				method: 'POST',
+				headers: {
+					Authorization: 'Bearer' + localStorage.getItem('access'),
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify ({
+					refresh: getCookie('refresh')
+				})
+			}).then ((response) => {
+				if (response.ok)
+					return response.json();
+			}).then ((result) => {
+				localStorage.setItem('access', result.access)
+				sendHttpRequest (method, url, body, success, fail);
+			})
+		} else {
+			return fail(method, url, body);
+		}
+	})
+}
+
+
+function asynSend(method, url) {
+	let	req =  new XMLHttpRequest();
+	let json = JSON.stringify(arguments);
+
+	req.onreadystatechange = function() {
+		let result = document.getElementById('result');
+		result.classList.add ('error');
+		if (req.readyState == 4) {
+			if (req.status == 200) {
+				let response = JSON.parse(req.responseText);
+
+				const access = searchAccess(response);
+				if (access)
+					localStorage.setItem('access', access);
+
+				const refresh = searchRefresh(response);
+				if (refresh)
+					localStorage.setItem('refresh', refresh);
+			}
+			else {
+				result.innerHTML = "서버 에러 발생";
+			}
+		}
+		else {
+			result.innerHTML = "통신중....";
+		}
+	}
+	req.open (method, url, true);
+	req.responseType = "json";
+	req.send (json);
+}
+
+function loadHome() {
+
 }
 
 
@@ -240,29 +313,4 @@ function serializeEvent(e) {
         type: e.type,
         key: e.key
 	};
-}
-
-
-function asynSend(method, url) {
-	let	req =  new XMLHttpRequest();
-	let json = JSON.stringify(arguments);
-
-	req.onreadystatechange = function() {
-		let result = document.getElementById('result');
-		result.classList.add ('error');
-		if (req.readyState == 4) {
-			if (req.status == 200) {
-				result.innerHTML = req.responseText;
-			}
-			else {
-				result.innerHTML = "서버 에러 발생";
-			}
-		}
-		else {
-			result.innerHTML = "통신중....";
-		}
-	}
-	req.open (method, url, true);
-	req.responseType = "json";
-	req.send (json);
 }
