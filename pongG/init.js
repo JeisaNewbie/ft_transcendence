@@ -36,37 +36,37 @@ function showLogIn() {
 	div_header.innerHTML = "Pong Game";
 	div_header.appendChild(makeTag('div', ['id', 'result']));
 
-	let form = makeTag('form', ['id', 'sign-in-form'], ['class', 'login-body-form'], ['onsubmit', "return logIn();"], ['method', 'post']);
+	// let form = makeTag('form', ['id', 'sign-in-form'], ['class', 'login-body-form'], ['onsubmit', "return logIn();"], ['method', 'post']);
 
-	let	div = makeTag('div');
-	let input = makeTag('input', ['class', 'username'], ['id', 'username'], ['type', 'text'], ['placeholder', 'Enter your name']);
-	div.appendChild(input);
-	form.appendChild(div);
+	// let	div = makeTag('div');
+	// let input = makeTag('input', ['class', 'username'], ['id', 'username'], ['type', 'text'], ['placeholder', 'Enter your name']);
+	// div.appendChild(input);
+	// form.appendChild(div);
 
-	div = makeTag('div');
-	input = makeTag('input', ['class', 'password'], ['id', 'password'], ['type', 'password'], ['placeholder', 'Enter your password']);
-	div.appendChild(input);
-	form.appendChild(div);
+	// div = makeTag('div');
+	// input = makeTag('input', ['class', 'password'], ['id', 'password'], ['type', 'password'], ['placeholder', 'Enter your password']);
+	// div.appendChild(input);
+	// form.appendChild(div);
 
-	div = makeTag('div', ['class', 'login-button'], ['id', 'signin-button']);
-	input = makeTag('input', ['type', 'hidden']); //사용자가 알 필요 없는 값을 서버에 보낼때 필요
-	div.appendChild(input);
-	input = makeTag('input', ['type', 'submit'], ['value', 'Sign In']);
-	input.setAttribute('style', 'width: 100%');
-	div.appendChild(input);
-	form.appendChild(div);
-	div_body.appendChild(form);
+	// div = makeTag('div', ['class', 'login-button'], ['id', 'signin-button']);
+	// input = makeTag('input', ['type', 'hidden']); //사용자가 알 필요 없는 값을 서버에 보낼때 필요
+	// div.appendChild(input);
+	// input = makeTag('input', ['type', 'submit'], ['value', 'Sign In']);
+	// input.setAttribute('style', 'width: 100%');
+	// div.appendChild(input);
+	// form.appendChild(div);
+	// div_body.appendChild(form);
 
-	form = makeTag('form', ['id', 'signup-button-form'], ['class', 'login-body-form'], ['onsubmit', "return showSignUp();"]);
-	div = makeTag('div', ['class', 'signup-button'], ['id', 'signup-button']);
-	input = makeTag('input', ['type', 'submit'], ['value', 'Sign Up']);
-	input.setAttribute('style', 'width: 100%');
-	div.appendChild(input);
-	form.appendChild(div);
-	div_body.appendChild(form);
+	// form = makeTag('form', ['id', 'signup-button-form'], ['class', 'login-body-form'], ['onsubmit', "return showSignUp();"]);
+	// div = makeTag('div', ['class', 'signup-button'], ['id', 'signup-button']);
+	// input = makeTag('input', ['type', 'submit'], ['value', 'Sign Up']);
+	// input.setAttribute('style', 'width: 100%');
+	// div.appendChild(input);
+	// form.appendChild(div);
+	// div_body.appendChild(form);
 
-	form = makeTag('form', ['id', '42login-button-form'], ['class', 'login-body-form'], ['action', 'https://auth.42.fr/auth/realms/students-42/login-actions/authenticate?execution=e3ed291b-5578-4fcf-9f1a-d38a1ee483af&client_id=intra&tab_id=T11vR6Sh9g4'],['method', 'get']);
-	div = makeTag('div', ['class', 'ftlogin-button'], ['id', '42login-button']);
+	let form = makeTag('form', ['id', '42login-button-form'], ['class', 'login-body-form'], ['onsubmit', 'return logIn42();'], ['method', 'get']);
+	let div = makeTag('div', ['class', 'ftlogin-button'], ['id', '42login-button']);
 	input = makeTag('input', ['type', 'submit'], ['value', '42Log In']);
 	input.setAttribute('style', 'width: 100%');
 	div.appendChild(input);
@@ -134,6 +134,8 @@ function showSignUp() {
 	document.body.insertBefore (main, document.getElementById('js'))
 }
 
+
+
 function logIn() {
 	let id = document.getElementById('username').value;
 	let pw = document.getElementById('password').value;
@@ -165,6 +167,12 @@ function signUp() {
 	return true;
 }
 
+function logIn42() {
+	let method = document.getElementById('42login-button-form').getAttribute('method');
+
+	sendHttpRequest(method, 'URL', '', twoFactorAuth, showLogIn);
+}
+
 function sendHttpRequest(method, url, body, success, fail) {
 	fetch(url, {
 		method: method,
@@ -176,6 +184,10 @@ function sendHttpRequest(method, url, body, success, fail) {
 	}).then ((response) => {
 		if (response.status == 200 || response.status == 201) {
 			return success();
+		}
+		if (response.status == 302) {
+			let json = JSON.parse(response.json());
+			sendHttpRequest(method, json.Location, body);
 		}
 		const refresh = getCookie('refresh');
 		if (response.status == 401 && refresh) {
