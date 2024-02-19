@@ -133,3 +133,59 @@
 .format {
 	display: none;
 }
+
+.chat-room {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	box-sizing: border-box;
+	text-align: center;
+	
+}
+
+.chat-room-button {
+	all:unset;
+}
+
+.chat-room-individual
+{
+	display: grid;
+	grid-template-columns: 1fr 8fr;
+	font: bold;
+	color: #888;
+	/* border:1px solid rgb(110, 108, 108); */
+	background-color: rgb(254, 254, 254);
+	height: 80px;
+}
+
+.chat-room-individual .input-profile {
+	display: grid;
+	height: 80px;
+	border-radius: 50%;
+	border:1px solid rgba(110, 108, 108, 0.652);
+}
+
+.chat-room-individual .input-info {
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+	
+}
+
+.chat-room-individual .input-info>div {
+	box-sizing: border-box;
+	border:1px solid rgb(110, 108, 108);
+}
+
+.chat-room-individual .input-info .name {
+	font: bolder;
+	color: black;
+	text-align: left;
+	padding-left: 10px;
+	padding-top: 3px;
+}
+
+.chat-room-individual .input-info .word {
+	text-align: left;
+	padding-left: 10px;
+	padding-top: 3px;
+}

@@ -1,7 +1,12 @@
 let event_list = [];
+let current_talking_to = 'jhwnag2';
+let	user = new Chat('jhwang2', [['seokjyoo', 'hello'], ['minsulee', 'hiiiiiii'], ['semikim', 'byeeeeeee'], ['hyunwoju', 'see youuuuu']]); //서버에 채팅상대 리스트 요청;
 
-function addListener(elem, ev, listener) {
-	elem.addEventListener(ev, listener, false);
+function addListener(elem, ev, listener, option) {
+	if (option)
+		elem.addEventListener(ev, listener, option);
+	else
+		elem.addEventListener(ev, listener, false);
 }
 
 function removeListner(elem, ev, listener) {
@@ -26,12 +31,53 @@ function changeColorToRed() {
 
 // live chat
 function changeToLiveChat() {
+
+
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'green');
 
 	clearResult();
 	clearEvent();
 
+	showChatRoom(user);
+}
+
+function showChatRoom(user) {
+
+	let div_chat_room = makeTag('div', ['id', 'chat-room'], ['class', 'chat-room']);
+	
+	for (var i = 0; i < user.talking_to.length; i++)
+	{
+		let button_individual_room = makeTag('button',  ['id', user.talking_to[i][0]], ['class', 'chat-room-button']);
+		addListener(button_individual_room, 'click', openChattingRoom, {once : true});
+		let div_individual_room = makeTag('div', ['class', 'chat-room-individual']);
+		let div_individual_profile = makeTag('div', ['class', 'input-profile']);
+		let div_individual_info = makeTag('div', ['class', 'input-info']);
+		let div_individual_info_name = makeTag('div', ['class', 'name']);
+		div_individual_info_name.innerHTML = user.talking_to[i][0];
+		let div_individual_info_word = makeTag('div', ['class', 'word']);
+		div_individual_info_word.innerHTML = user.talking_to[i][1];
+		div_individual_room.appendChild(div_individual_profile);
+		div_individual_info.appendChild(div_individual_info_name);
+		div_individual_info.appendChild(div_individual_info_word);
+		div_individual_room.appendChild(div_individual_info);
+		button_individual_room.appendChild(div_individual_room);
+		div_chat_room.appendChild(button_individual_room);
+	}
+	document.getElementById('result').appendChild(div_chat_room);
+}
+
+function openChattingRoom(event) {
+			
+	event.preventDefault();
+	const button = event.currentTarget;
+	chattingWithFriend(user, button.id);
+}
+
+function chattingWithFriend(user, id) {
+
+	clearResult();
+	clearEvent();
 	let div_chat_form = makeTag('div', ['class', 'chat_wrap']);
 	let div_chat = makeTag('div', ['class', 'chat']);
 	let	ul_chatting = makeTag('ul', ['id', 'chatting']);
@@ -61,8 +107,8 @@ function changeToLiveChat() {
 	div_chat_form.appendChild(div_chat_format);
 
 	document.getElementById('result').appendChild(div_chat_form);
-
-	let user = new Chat('jhwang2');
+	current_talking_to = id;
+	console.log(current_talking_to);
 	user.init(user);
 }
 
@@ -75,22 +121,21 @@ function changeColorToBlack() {
 }
 
 //Live Chat
-function Chat(name) {
+function Chat(name, talking_to) {
 	this.name = name;
+	this.talking_to = talking_to;
 }
 
 Chat.prototype.init = function(user) {
 	event_list.push([document, 'keydown', Chat.prototype.sendMessage]);
-	addListener(document, 'keydown', (e) => {
-		this.sendMessage(e, user);
-	});
+	addListener(document, 'keydown', this.sendMessage);
 }
 
-Chat.prototype.sendMessage = function(e, user) {
+Chat.prototype.sendMessage = function(e) {
 	if (e.keyCode == 13) {
 
 		e.preventDefault();
-
+		
 		let msg = $('div.input-div textarea').val();
 		if (msg)
 			Chat.prototype.sendMessageToServer(msg, user);
@@ -105,10 +150,42 @@ Chat.prototype.sendMessageToServer = function(message, user) {
 
 	const data = {
 		"name": user.getName(),
-		"message": message
+		"reciever": current_talking_to,
+		"message": message,
 	};
 
 	console.log(data);
+
+	// data_list_live_chat = [
+	// 	{"talking_to",
+	// 	"profile",
+	// 	"last_message"},
+	// 	"talking_to",
+	// 	"profile",
+	// 	"last_message"
+	// 	"talking_to",
+	// 	"profile",
+	// 	"last_message"
+	// ]
+
+	// data_list = [{
+
+	// 	"name": user.getName(),
+	// 	"reciever": receiver,
+	// 	"message": message,
+	// },
+	// {
+
+	// 	"name": user.getName(),
+	// 	"reciever": receiver,
+	// 	"message": message,
+	// },
+	// {
+
+	// 	"name": user.getName(),
+	// 	"reciever": receiver,
+	// 	"message": message,
+	// }]
 	postData('POST', 'localhost:8000', data)
 	.then((data) => {this.showMessage(data);})
 	.catch((err) => {console.log(err);});
@@ -129,8 +206,6 @@ Chat.prototype.clearTextArea = function() {
 Chat.prototype.getName = function() {
 	return this.name;
 }
-
-
 
 async function postData(method, url, data) {
 	const response = await fetch(url, {

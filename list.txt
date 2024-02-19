@@ -1,0 +1,23 @@
+1. chatting room
+
+2. profile
+
+2-1. block
+
+2-2. invite individual
+
+3. tournament warning
+
+
+
+1. live_chat 클릭시 카카오톡 처럼 채팅 목록
+
+2. 채팅방 클릭시 서버쪽에 이전 채팅기록 요구
+
+3. 서버쪽은 이전 채팅기록 송신
+
+4. 클라는 이전 채팅기록 출력
+
+study-list
+
+1. 상대방이 따로 request를 안보냈는데 서버쪽에서 메세지를 어떻게 보내는지
