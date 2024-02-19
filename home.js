@@ -1,38 +1,160 @@
+let event_list = [];
+
+function addListener(elem, ev, listener) {
+	elem.addEventListener(ev, listener, false);
+}
+
+function removeListner(elem, ev, listener) {
+	elem.removeEventListener(ev, listener, false);
+}
+
 function changeColorToBlue() {
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'blue');
 
-	let result = document.getElementById('result');
-	let font = document.getElementById('font');
-	if (font) result.removeChild(font);
+	clearResult();
+	clearEvent();
 }
 
 function changeColorToRed() {
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'red');
 
-	let result = document.getElementById('result');
-	let font = document.getElementById('font');
-	if (font) result.removeChild(font);
+	clearResult();
+	clearEvent();
 }
 
-function changeColorToGreen() {
+// live chat
+function changeToLiveChat() {
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'green');
 
-	let result = document.getElementById('result');
-	let font = document.getElementById('font');
-	if (font) result.removeChild(font);
+	clearResult();
+	clearEvent();
+
+	let div_chat_form = makeTag('div', ['class', 'chat_wrap']);
+	let div_chat = makeTag('div', ['class', 'chat']);
+	let	ul_chatting = makeTag('ul', ['id', 'chatting']);
+	let	div_chat_input = makeTag('div', ['class', 'input-div']);
+	let textarea = makeTag('textarea', ['id', 'text-area'], ['placeholder', 'Press Enter for send message.']);
+
+	div_chat.appendChild(ul_chatting);
+	div_chat_input.appendChild(textarea);
+
+	let	div_chat_format = makeTag('div', ['class', 'chat format']);
+	let	ul_chat_format = makeTag('ul');
+	let li_chat_format = makeTag('li');
+	let div_chat_sender = makeTag('div', ['id', 'sender']);
+	let span_chat_sender = makeTag('span');
+	let div_chat_message = makeTag('div', ['class', 'message']);
+	let span_chat_message = makeTag('span');
+
+	div_chat_message.appendChild(span_chat_message);
+	div_chat_sender.appendChild(span_chat_sender);
+	li_chat_format.appendChild(div_chat_sender);
+	li_chat_format.appendChild(div_chat_message);
+	ul_chat_format.appendChild(li_chat_format);
+	div_chat_format.appendChild(ul_chat_format);
+
+	div_chat_form.appendChild(div_chat);
+	div_chat_form.appendChild(div_chat_input);
+	div_chat_form.appendChild(div_chat_format);
+
+	document.getElementById('result').appendChild(div_chat_form);
+
+	let user = new Chat('jhwang2');
+	user.init(user);
 }
 
 function changeColorToBlack() {
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'black');
 
-	let result = document.getElementById('result');
-	let font = document.getElementById('font');
-	if (font) result.removeChild(font);
+	clearResult();
+	clearEvent();
 }
+
+//Live Chat
+function Chat(name) {
+	this.name = name;
+}
+
+Chat.prototype.init = function(user) {
+	event_list.push([document, 'keydown', Chat.prototype.sendMessage]);
+	addListener(document, 'keydown', (e) => {
+		this.sendMessage(e, user);
+	});
+}
+
+Chat.prototype.sendMessage = function(e, user) {
+	if (e.keyCode == 13) {
+
+		e.preventDefault();
+
+		let msg = $('div.input-div textarea').val();
+		if (msg)
+			Chat.prototype.sendMessageToServer(msg, user);
+		else
+			window.alert('Type message.');
+
+		Chat.prototype.clearTextArea();
+	}
+}
+
+Chat.prototype.sendMessageToServer = function(message, user) {
+
+	const data = {
+		"name": user.getName(),
+		"message": message
+	};
+
+	console.log(data);
+	postData('POST', 'localhost:8000', data)
+	.then((data) => {this.showMessage(data);})
+	.catch((err) => {console.log(err);});
+}
+
+Chat.prototype.receiveMessage = function() {
+
+}
+
+Chat.prototype.showMessage = function(data) {
+
+}
+
+Chat.prototype.clearTextArea = function() {
+	document.getElementById('text-area').value = '';
+}
+
+Chat.prototype.getName = function() {
+	return this.name;
+}
+
+
+
+async function postData(method, url, data) {
+	const response = await fetch(url, {
+		method: method,
+		headers: {
+			Authorization: 'Bearer' + localStorage.getItem('access'),
+			'Content-Type': 'application/json'
+		},
+		body: body
+	});
+	return response.json();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 function makeTag(tag, attr) {
 	let new_tag = document.createElement(tag);
@@ -45,4 +167,14 @@ function makeTag(tag, attr) {
 	}
 
 	return new_tag;
+}
+
+function clearResult() {
+	let result = document.getElementById('result');
+	while (result.firstChild) result.firstChild.remove();
+}
+
+function clearEvent() {
+	for (var i = 0; i < event_list.length; i++)
+		removeListner (event_list[i][0], event_list[i][1], event_list[i][2]);
 }
