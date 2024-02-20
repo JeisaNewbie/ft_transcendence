@@ -77,8 +77,19 @@ function chattingWithFriend(id) {
 
 	clearResult();
 	clearEvent();
+	
+	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
+	let button_chat_block = makeTag('button', ['id', 'block'], ['onclick', 'blockTalkingTo()']);
+	let button_chat_non_block = makeTag('button', ['id', 'block'], ['onclick', 'nonBlockTalkingTo()']);
+	let button_game_invite = makeTag('button', ['id', 'invite'], ['onclick', 'inviteTalkingTo()']);
+
+	button_chat_block.innerHTML = 'Block';
+	button_chat_non_block.innerHTML = 'Non Block';
+	button_game_invite.innerHTML = 'Invite';
+	div_chat_option.appendChild(button_chat_block);
+	div_chat_option.appendChild(button_chat_non_block);
+	div_chat_option.appendChild(button_game_invite);
 	let div_chat_form = makeTag('div', ['class', 'chat_wrap']);
-	// let	ul_chatting = makeTag('ul', ['id', 'chatting']);
 	let	div_chat_input = makeTag('div', ['class', 'input-div']);
 	let textarea = makeTag('textarea', ['id', 'text-area'], ['placeholder', 'Press Enter for send message.']);
 
@@ -86,13 +97,7 @@ function chattingWithFriend(id) {
 
 	let div_chat = makeTag('div', ['id', 'chat'], ['class', 'chat']);
 
-	// let li_chat_format = makeTag('li');
-
-	// li_chat_format.appendChild(div_chat_sender);
-	// li_chat_format.appendChild(div_chat_message);
-	// ul_chatting.appendChild(li_chat_format);
-	// div_chat.appendChild(ul_chatting);
-
+	div_chat_form.appendChild(div_chat_option);
 	div_chat_form.appendChild(div_chat);
 	div_chat_form.appendChild(div_chat_input);
 
