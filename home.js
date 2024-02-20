@@ -6,7 +6,13 @@ let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3
 // const socket = WebSocket('');
 
 // socket.onmessage = function (e) {
+
 // 	const message = JSON.parse(e.data);
+
+// 	if (message == 'left')
+// 		showMessageToLeft(message);
+// 	else
+// 		showMessageToRight(message);
 // }
 
 function addListener(elem, ev, listener, option) {
@@ -72,32 +78,23 @@ function chattingWithFriend(user, id) {
 	clearResult();
 	clearEvent();
 	let div_chat_form = makeTag('div', ['class', 'chat_wrap']);
-	let div_chat = makeTag('div', ['class', 'chat']);
-	let	ul_chatting = makeTag('ul', ['id', 'chatting']);
+	// let	ul_chatting = makeTag('ul', ['id', 'chatting']);
 	let	div_chat_input = makeTag('div', ['class', 'input-div']);
 	let textarea = makeTag('textarea', ['id', 'text-area'], ['placeholder', 'Press Enter for send message.']);
 
-	div_chat.appendChild(ul_chatting);
 	div_chat_input.appendChild(textarea);
 
-	let	div_chat_format = makeTag('div', ['class', 'chat format']);
-	let	ul_chat_format = makeTag('ul');
-	let li_chat_format = makeTag('li');
-	let div_chat_sender = makeTag('div', ['id', 'sender']);
-	let span_chat_sender = makeTag('span');
-	let div_chat_message = makeTag('div', ['class', 'message']);
-	let span_chat_message = makeTag('span');
+	let div_chat = makeTag('div', ['id', 'chat'], ['class', 'chat']);
 
-	div_chat_message.appendChild(span_chat_message);
-	div_chat_sender.appendChild(span_chat_sender);
-	li_chat_format.appendChild(div_chat_sender);
-	li_chat_format.appendChild(div_chat_message);
-	ul_chat_format.appendChild(li_chat_format);
-	div_chat_format.appendChild(ul_chat_format);
+	// let li_chat_format = makeTag('li');
+
+	// li_chat_format.appendChild(div_chat_sender);
+	// li_chat_format.appendChild(div_chat_message);
+	// ul_chatting.appendChild(li_chat_format);
+	// div_chat.appendChild(ul_chatting);
 
 	div_chat_form.appendChild(div_chat);
 	div_chat_form.appendChild(div_chat_input);
-	div_chat_form.appendChild(div_chat_format);
 
 	document.getElementById('result').appendChild(div_chat_form);
 	current_talking_to = id;
@@ -172,16 +169,42 @@ Chat.prototype.sendMessageToServer = function(message, user) {
 	// 	"reciever": receiver,
 	// 	"message": message,
 	// }]
-	postData('POST', 'localhost:8000', data)
-	.then((data) => {this.showMessage(data);})
-	.catch((err) => {console.log(err);});
+	// postData('POST', 'localhost:8000', data)
+	// .then((data) => {this.showMessage(data);})
+	// .catch((err) => {console.log(err);});
+
+	const get_message = message;
+	if (get_message.indexOf('left'))
+		this.showMessageToLeft(message);
+	else
+		this.showMessageToRight(message);
 }
 
-Chat.prototype.receiveMessage = function() {
+Chat.prototype.showMessageToLeft = function(message) {
+	let div_chat = document.getElementById('chat');
+	let div_chat_talking_to = makeTag('div', ['class', 'talking_to']);
+	let p_message = makeTag('p', ['class', 'format']);
+	
+	p_message.innerHTML = message;
+
+	div_chat_talking_to.appendChild(p_message);
+	div_chat.appendChild(div_chat_talking_to);
 
 }
 
-Chat.prototype.showMessage = function(data) {
+Chat.prototype.showMessageToRight = function(message) {
+	let div_chat = document.getElementById('chat');
+	let div_chat_sender = makeTag('div', ['class', 'sender']);
+	let p_message = makeTag('p', ['class', 'format']);
+
+	p_message.innerHTML = message;
+
+	div_chat_sender.appendChild(p_message);
+	div_chat.appendChild(div_chat_sender);
+}
+
+
+Chat.prototype.receiveMessage = function(data) {
 
 }
 
@@ -201,6 +224,17 @@ async function postData(method, url, data) {
 			'Content-Type': 'application/json'
 		},
 		body: body
+	});
+	return response.json();
+}
+
+async function getData(method, url, data) {
+	const response = await fetch(url, {
+		method: method,
+		headers: {
+			Authorization: 'Bearer' + localStorage.getItem('access'),
+			'Content-Type': 'application/json'
+		}
 	});
 	return response.json();
 }

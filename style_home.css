@@ -65,6 +65,11 @@
 
 /* live chat */
 
+.chat_wrap {
+	width: 100%;
+	list-style: none;
+}
+
 .chat_wrap .header {
 	font-size: 14px;
 	padding: 15px 0;
@@ -73,45 +78,43 @@
 	text-align: center;
 }
 .chat_wrap .chat {
-	padding-bottom: 80px;
+	display: flex;
+	flex-direction: column;
 }
 
-.chat_wrap .chatul {
-	width: 100%;
-	list-style: none;
-}
-.chat_wrap .chatulli {
-	width: 100%;
-}
-
-.chat_wrap .chatulli.left {
-	text-align: left;
-}
-
-.chat_wrap .chatulli.right {
-	text-align: right;
-}
-
-.chat_wrap .chatulli>div {
-	font-size: 13px;
-}
-
-.chat_wrap .chatulli>div.sender {
-	margin: 10px 20px 020px;
-	font-weight: bold;
-}
-
-.chat_wrap .chatulli>div.message {
-	display: inline-block;
-	word-break: break-all;
-	margin: 5px 20px;
-	max-width: 75%;
+.talking_to {
+	display: flex;
+	flex-wrap: wrap;
+	/* word-break: break-all; */
 	border: 1px solid #888;
 	padding: 10px;
-	border-radius: 5px;
-	background-color: #FCFCFC;
 	color: #555;
-	text-align: left;
+}
+
+.talking_to>p {
+	/* word-break: break-all; */
+	width: 50%;
+	border: 1px solid #888;
+	padding: 10px;
+	color: #555;
+}
+
+.sender {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row-reverse;
+	word-break: break-all;
+	border: 1px solid #888;
+	padding: 10px;
+	color: #555;
+}
+
+.sender>p {
+	/* word-break: break-all; */
+	width: 50%;
+	border: 1px solid #888;
+	padding: 10px;
+	color: #555;
 }
 
 .chat_wrap .input-div {
@@ -131,7 +134,7 @@
 }
 
 .format {
-	display: none;
+	display: flex;
 }
 
 .chat-room {
