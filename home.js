@@ -2,6 +2,12 @@ let event_list = [];
 let current_talking_to = 'jhwnag2';
 let	user = new Chat('jhwang2', [['seokjyoo', 'hello'], ['minsulee', 'hiiiiiii'], ['semikim', 'byeeeeeee'], ['hyunwoju', 'see youuuuu']]); //서버에 채팅상대 리스트 요청;
 
+// const socket = WebSocket('');
+
+// socket.onmessage = function (e) {
+// 	const message = JSON.parse(e.data);
+// }
+
 function addListener(elem, ev, listener, option) {
 	if (option)
 		elem.addEventListener(ev, listener, option);
@@ -11,22 +17,6 @@ function addListener(elem, ev, listener, option) {
 
 function removeListner(elem, ev, listener) {
 	elem.removeEventListener(ev, listener, false);
-}
-
-function changeColorToBlue() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'blue');
-
-	clearResult();
-	clearEvent();
-}
-
-function changeColorToRed() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'red');
-
-	clearResult();
-	clearEvent();
 }
 
 // live chat
@@ -45,7 +35,7 @@ function changeToLiveChat() {
 function showChatRoom(user) {
 
 	let div_chat_room = makeTag('div', ['id', 'chat-room'], ['class', 'chat-room']);
-	
+
 	for (var i = 0; i < user.talking_to.length; i++)
 	{
 		let button_individual_room = makeTag('button',  ['id', user.talking_to[i][0]], ['class', 'chat-room-button']);
@@ -68,7 +58,7 @@ function showChatRoom(user) {
 }
 
 function openChattingRoom(event) {
-			
+
 	event.preventDefault();
 	const button = event.currentTarget;
 	chattingWithFriend(user, button.id);
@@ -112,13 +102,6 @@ function chattingWithFriend(user, id) {
 	user.init(user);
 }
 
-function changeColorToBlack() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'black');
-
-	clearResult();
-	clearEvent();
-}
 
 //Live Chat
 function Chat(name, talking_to) {
@@ -135,7 +118,7 @@ Chat.prototype.sendMessage = function(e) {
 	if (e.keyCode == 13) {
 
 		e.preventDefault();
-		
+
 		let msg = $('div.input-div textarea').val();
 		if (msg)
 			Chat.prototype.sendMessageToServer(msg, user);
@@ -252,4 +235,28 @@ function clearResult() {
 function clearEvent() {
 	for (var i = 0; i < event_list.length; i++)
 		removeListner (event_list[i][0], event_list[i][1], event_list[i][2]);
+}
+
+function changeColorToBlue() {
+	let body = document.getElementById('body');
+	body.classList.replace(body.classList[1].toString(), 'blue');
+
+	clearResult();
+	clearEvent();
+}
+
+function changeColorToRed() {
+	let body = document.getElementById('body');
+	body.classList.replace(body.classList[1].toString(), 'red');
+
+	clearResult();
+	clearEvent();
+}
+
+function changeColorToBlack() {
+	let body = document.getElementById('body');
+	body.classList.replace(body.classList[1].toString(), 'black');
+
+	clearResult();
+	clearEvent();
 }
