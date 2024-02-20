@@ -209,7 +209,7 @@ Chat.prototype.showMessageToRight = function(message) {
 	let img_individual_profile = makeTag('img', ['src', user.talking_to[1][2]], ['alt', 'hello']);
 	let div_chat_message = makeTag('div', ['class', 'chat-box']);
 	let div_chat_name = makeTag('p', ['class', 'name-format']);
-	let p_message = makeTag('p', ['class', 'format']);
+	let p_message = makeTag('p', ['class', 'chat-format']);
 	
 	div_individual_profile.appendChild(img_individual_profile);
 	div_chat_name.innerHTML = current_talking_to;
