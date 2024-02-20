@@ -1,6 +1,7 @@
 let event_list = [];
 let current_talking_to = 'jhwnag2';
-let	user = new Chat('jhwang2', [['seokjyoo', 'hello'], ['minsulee', 'hiiiiiii'], ['semikim', 'byeeeeeee'], ['hyunwoju', 'see youuuuu']]); //서버에 채팅상대 리스트 요청;
+let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3'], ['minsulee', 'hiiiiiii', './img/character2.jpg', '5'], ['semikim', 'byeeeeeee', './img/character3.jpg', ''], ['hyunwoju', 'see youuuuu', './img/character4.jpg', '']]); //서버에 채팅상대 리스트 요청;
+
 
 // const socket = WebSocket('');
 
@@ -42,6 +43,8 @@ function showChatRoom(user) {
 		addListener(button_individual_room, 'click', openChattingRoom, {once : true});
 		let div_individual_room = makeTag('div', ['class', 'chat-room-individual']);
 		let div_individual_profile = makeTag('div', ['class', 'input-profile']);
+		let img_individual_profile = makeTag('img', ['src', user.talking_to[i][2]], ['alt', 'hello']);
+		div_individual_profile.appendChild(img_individual_profile);
 		let div_individual_info = makeTag('div', ['class', 'input-info']);
 		let div_individual_info_name = makeTag('div', ['class', 'name']);
 		div_individual_info_name.innerHTML = user.talking_to[i][0];
