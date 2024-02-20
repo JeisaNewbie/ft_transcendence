@@ -212,7 +212,7 @@ Chat.prototype.showMessageToRight = function(message) {
 	let p_message = makeTag('p', ['class', 'chat-format']);
 	
 	div_individual_profile.appendChild(img_individual_profile);
-	div_chat_name.innerHTML = current_talking_to;
+	div_chat_name.innerHTML = user.getName();
 	p_message.innerHTML = message;
 	div_chat_message.appendChild(div_chat_name);
 	div_chat_message.appendChild(p_message);

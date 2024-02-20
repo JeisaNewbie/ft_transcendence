@@ -112,7 +112,7 @@
 	word-break: break-all;
 	border: 1px solid #888;
 	padding: 10px;
-	color: #555;
+	color: black;
 }
 
 .sender {
@@ -142,7 +142,7 @@
 	word-break: break-all;
 	border: 1px solid #888;
 	padding: 10px;
-	color: #555;
+	color: black;
 }
 
 .chat_wrap .input-div {
