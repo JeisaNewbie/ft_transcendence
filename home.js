@@ -9,10 +9,10 @@ let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3
 
 // 	const message = JSON.parse(e.data);
 
-// 	if (message == 'left')
-// 		showMessageToLeft(message);
-// 	else
+// 	if (message == 'jhwang2')
 // 		showMessageToRight(message);
+// 	else
+// 		showMessageToLeft(message);
 // }
 
 function addListener(elem, ev, listener, option) {
@@ -36,10 +36,10 @@ function changeToLiveChat() {
 	clearResult();
 	clearEvent();
 
-	showChatRoom(user);
+	showChatRoom();
 }
 
-function showChatRoom(user) {
+function showChatRoom() {
 
 	let div_chat_room = makeTag('div', ['id', 'chat-room'], ['class', 'chat-room']);
 
@@ -70,10 +70,10 @@ function openChattingRoom(event) {
 
 	event.preventDefault();
 	const button = event.currentTarget;
-	chattingWithFriend(user, button.id);
+	chattingWithFriend(button.id);
 }
 
-function chattingWithFriend(user, id) {
+function chattingWithFriend(id) {
 
 	clearResult();
 	clearEvent();
@@ -99,7 +99,7 @@ function chattingWithFriend(user, id) {
 	document.getElementById('result').appendChild(div_chat_form);
 	current_talking_to = id;
 	console.log(current_talking_to);
-	user.init(user);
+	user.init();
 }
 
 
@@ -109,7 +109,7 @@ function Chat(name, talking_to) {
 	this.talking_to = talking_to;
 }
 
-Chat.prototype.init = function(user) {
+Chat.prototype.init = function() {
 	event_list.push([document, 'keydown', Chat.prototype.sendMessage]);
 	addListener(document, 'keydown', this.sendMessage);
 }
@@ -121,7 +121,7 @@ Chat.prototype.sendMessage = function(e) {
 
 		let msg = $('div.input-div textarea').val();
 		if (msg)
-			Chat.prototype.sendMessageToServer(msg, user);
+			Chat.prototype.sendMessageToServer(msg);
 		else
 			window.alert('Type message.');
 
@@ -129,7 +129,7 @@ Chat.prototype.sendMessage = function(e) {
 	}
 }
 
-Chat.prototype.sendMessageToServer = function(message, user) {
+Chat.prototype.sendMessageToServer = function(message) {
 
 	const data = {
 		"name": user.getName(),
@@ -174,20 +174,30 @@ Chat.prototype.sendMessageToServer = function(message, user) {
 	// .catch((err) => {console.log(err);});
 
 	const get_message = message;
-	if (get_message.indexOf('left'))
-		this.showMessageToLeft(message);
-	else
+	if (get_message.indexOf('left') == -1)
 		this.showMessageToRight(message);
+	else
+		this.showMessageToLeft(message);
 }
 
 Chat.prototype.showMessageToLeft = function(message) {
 	let div_chat = document.getElementById('chat');
 	let div_chat_talking_to = makeTag('div', ['class', 'talking_to']);
+	let div_individual_profile = makeTag('div', ['class', 'input-profile']);
+	let img_individual_profile = makeTag('img', ['src', user.talking_to[0][2]], ['alt', 'hello']);
+	let div_chat_message = makeTag('div', ['class', 'chat-box']);
+	let div_chat_name = makeTag('p', ['class', 'name-format']);
 	let p_message = makeTag('p', ['class', 'format']);
 	
+	div_individual_profile.appendChild(img_individual_profile);
+	div_chat_name.innerHTML = current_talking_to;
+	div_chat_message.appendChild(div_chat_name);
 	p_message.innerHTML = message;
+	div_chat_message.appendChild(p_message);
 
-	div_chat_talking_to.appendChild(p_message);
+	div_chat_talking_to.appendChild(div_individual_profile);
+	div_chat_talking_to.appendChild(div_chat_message);
+	div_chat_talking_to.appendChild(makeTag('div'));
 	div_chat.appendChild(div_chat_talking_to);
 
 }
@@ -195,11 +205,21 @@ Chat.prototype.showMessageToLeft = function(message) {
 Chat.prototype.showMessageToRight = function(message) {
 	let div_chat = document.getElementById('chat');
 	let div_chat_sender = makeTag('div', ['class', 'sender']);
+	let div_individual_profile = makeTag('div', ['class', 'input-profile']);
+	let img_individual_profile = makeTag('img', ['src', user.talking_to[1][2]], ['alt', 'hello']);
+	let div_chat_message = makeTag('div', ['class', 'chat-box']);
+	let div_chat_name = makeTag('p', ['class', 'name-format']);
 	let p_message = makeTag('p', ['class', 'format']);
-
+	
+	div_individual_profile.appendChild(img_individual_profile);
+	div_chat_name.innerHTML = current_talking_to;
 	p_message.innerHTML = message;
+	div_chat_message.appendChild(div_chat_name);
+	div_chat_message.appendChild(p_message);
 
-	div_chat_sender.appendChild(p_message);
+	div_chat_sender.appendChild(makeTag('div'));
+	div_chat_sender.appendChild(div_chat_message);
+	div_chat_sender.appendChild(div_individual_profile);
 	div_chat.appendChild(div_chat_sender);
 }
 
