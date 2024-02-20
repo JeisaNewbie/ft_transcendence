@@ -317,3 +317,11 @@ function changeColorToBlack() {
 	clearResult();
 	clearEvent();
 }
+
+function changeColorToAqua() {
+	let body = document.getElementById('body');
+	body.classList.replace(body.classList[1].toString(), 'default');
+
+	clearResult();
+	clearEvent();
+}
