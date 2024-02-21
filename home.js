@@ -1,5 +1,8 @@
 let event_list = [];
 let current_talking_to = 'jhwnag2';
+let cur_scrollY = 0;
+let scrollYBot = 0;
+let scrollFlag = 0;
 let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3'], ['minsulee', 'hiiiiiii', './img/character2.jpg', '5'], ['semikim', 'byeeeeeee', './img/character3.jpg', ''], ['hyunwoju', 'see youuuuu', './img/character4.jpg', '']]); //서버에 채팅상대 리스트 요청;
 
 
@@ -99,6 +102,7 @@ function chattingWithFriend(id) {
 
 	div_chat_form.appendChild(div_chat_option);
 	div_chat_form.appendChild(div_chat);
+	// div_chat_form.appendChild(div_chat_input);
 
 	document.getElementById('result').appendChild(div_chat_form);
 	document.getElementById('result').appendChild(div_chat_input);
@@ -117,6 +121,8 @@ function Chat(name, talking_to) {
 Chat.prototype.init = function() {
 	event_list.push([document, 'keydown', Chat.prototype.sendMessage]);
 	addListener(document, 'keydown', this.sendMessage);
+	event_list.push([document.querySelector('.chat'), 'wheel', saveCurrentScrollPosition]);
+	addListener(document.querySelector('.chat'), 'wheel', saveCurrentScrollPosition);
 }
 
 Chat.prototype.sendMessage = function(e) {
@@ -142,13 +148,17 @@ Chat.prototype.sendMessageToServer = function(message) {
 		"message": message,
 	};
 
-	let flag = checkScrollOrNot(document.querySelector('.chat_wrap'));
 	const get_message = message;
 	if (get_message.indexOf('left') == -1)
 		this.showMessageToRight(message);
 	else
 		this.showMessageToLeft(message);
-	scrollToNewElement(flag, document.querySelector('.chat_wrap'));
+	scrollYBot = document.querySelector('.chat_wrap').scrollHeight - document.querySelector('.chat_wrap').clientHeight;;
+
+	if (scrollFlag == 0)
+		cur_scrollY = scrollYBot;
+
+	scrollToNewElement(document.querySelector('.chat_wrap'));
 }
 
 function checkScrollOrNot(resultElement) {
@@ -157,15 +167,26 @@ function checkScrollOrNot(resultElement) {
 	return 1;
 }
 
+function saveCurrentScrollPosition(e) {
+	cur_scrollY = document.querySelector('.chat_wrap').scrollTop;
+
+	if (scrollYBot - cur_scrollY == 0.5)
+		cur_scrollY = scrollYBot;
+
+	scrollFlag = 0;
+
+	if (cur_scrollY != scrollYBot)
+		scrollFlag = 1;
+}
+
 function getCurrentScrollPosition(resultElement) {
 	if (resultElement)
 		return resultElement.scrollHeight - resultElement.scrollTop - resultElement.clientHeight;
 }
 
-function scrollToNewElement(flag, resultElement) {
-	if (flag == 0)
-		return;
-
+function scrollToNewElement(resultElement) {
+	if (cur_scrollY < scrollYBot)
+		return ;
 	let newElement = resultElement.lastElementChild;
 	if (newElement) {
 		newElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
