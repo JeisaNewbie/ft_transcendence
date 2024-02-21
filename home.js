@@ -35,10 +35,9 @@ function changeToLiveChat() {
 
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'green');
+	console.log(event_list.length);
 
 	clearResult();
-	clearEvent();
-
 	showChatRoom();
 }
 
@@ -79,7 +78,6 @@ function openChattingRoom(event) {
 function chattingWithFriend(id) {
 
 	clearResult();
-	clearEvent();
 
 	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
 	let button_chat_block = makeTag('button', ['id', 'block'], ['onclick', 'blockTalkingTo()']);
@@ -102,7 +100,6 @@ function chattingWithFriend(id) {
 
 	div_chat_form.appendChild(div_chat_option);
 	div_chat_form.appendChild(div_chat);
-	// div_chat_form.appendChild(div_chat_input);
 
 	document.getElementById('result').appendChild(div_chat_form);
 	document.getElementById('result').appendChild(div_chat_input);
@@ -119,9 +116,7 @@ function Chat(name, talking_to) {
 }
 
 Chat.prototype.init = function() {
-	event_list.push([document, 'keydown', Chat.prototype.sendMessage]);
 	addListener(document, 'keydown', this.sendMessage);
-	event_list.push([document.querySelector('.chat'), 'wheel', saveCurrentScrollPosition]);
 	addListener(document.querySelector('.chat'), 'wheel', saveCurrentScrollPosition);
 }
 
@@ -302,17 +297,11 @@ function clearResult() {
 	while (result.firstChild) result.firstChild.remove();
 }
 
-function clearEvent() {
-	for (var i = 0; i < event_list.length; i++)
-		removeListner (event_list[i][0], event_list[i][1], event_list[i][2]);
-}
-
 function changeColorToBlue() {
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'blue');
 
 	clearResult();
-	clearEvent();
 }
 
 function changeColorToRed() {
@@ -320,7 +309,6 @@ function changeColorToRed() {
 	body.classList.replace(body.classList[1].toString(), 'red');
 
 	clearResult();
-	clearEvent();
 }
 
 function changeColorToBlack() {
@@ -328,7 +316,6 @@ function changeColorToBlack() {
 	body.classList.replace(body.classList[1].toString(), 'black');
 
 	clearResult();
-	clearEvent();
 }
 
 function changeColorToAqua() {
@@ -336,5 +323,4 @@ function changeColorToAqua() {
 	body.classList.replace(body.classList[1].toString(), 'default');
 
 	clearResult();
-	clearEvent();
 }
