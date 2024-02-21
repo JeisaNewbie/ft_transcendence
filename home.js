@@ -184,6 +184,7 @@ Chat.prototype.sendMessageToServer = function(message) {
 		this.showMessageToRight(message);
 	else
 		this.showMessageToLeft(message);
+	scrollToNewElement();
 }
 
 Chat.prototype.showMessageToLeft = function(message) {
@@ -265,7 +266,13 @@ async function getData(method, url, data) {
 	return response.json();
 }
 
-
+function scrollToNewElement() {
+	var result = document.getElementById('chat');
+	var newElement = result.lastElementChild;
+	if (newElement) {
+		newElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+	}
+}
 
 
 
