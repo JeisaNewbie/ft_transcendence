@@ -77,21 +77,21 @@ function chattingWithFriend(id) {
 
 	clearResult();
 	clearEvent();
-	
+
 	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
 	let button_chat_block = makeTag('button', ['id', 'block'], ['onclick', 'blockTalkingTo()']);
 	let button_chat_non_block = makeTag('button', ['id', 'block'], ['onclick', 'nonBlockTalkingTo()']);
 	let button_game_invite = makeTag('button', ['id', 'invite'], ['onclick', 'inviteTalkingTo()']);
 
 	button_chat_block.innerHTML = 'Block';
-	button_chat_non_block.innerHTML = 'Non Block';
+	button_chat_non_block.innerHTML = 'UnBlock';
 	button_game_invite.innerHTML = 'Invite';
 	div_chat_option.appendChild(button_chat_block);
 	div_chat_option.appendChild(button_chat_non_block);
 	div_chat_option.appendChild(button_game_invite);
 	let div_chat_form = makeTag('div', ['class', 'chat_wrap']);
 	let	div_chat_input = makeTag('div', ['class', 'input-div']);
-	let textarea = makeTag('textarea', ['id', 'text-area'], ['placeholder', 'Press Enter for send message.']);
+	let textarea = makeTag('textarea', ['id', 'text-area'], ['class', 'text-area'], ['placeholder', 'Press Enter for send message.']);
 
 	div_chat_input.appendChild(textarea);
 
@@ -99,9 +99,10 @@ function chattingWithFriend(id) {
 
 	div_chat_form.appendChild(div_chat_option);
 	div_chat_form.appendChild(div_chat);
-	div_chat_form.appendChild(div_chat_input);
+	// div_chat_form.appendChild(div_chat_input);
 
 	document.getElementById('result').appendChild(div_chat_form);
+	document.getElementById('result').appendChild(div_chat_input);
 	current_talking_to = id;
 	console.log(current_talking_to);
 	user.init();
@@ -193,7 +194,7 @@ Chat.prototype.showMessageToLeft = function(message) {
 	let div_chat_message = makeTag('div', ['class', 'chat-box']);
 	let div_chat_name = makeTag('p', ['class', 'name-format']);
 	let p_message = makeTag('p', ['class', 'format']);
-	
+
 	div_individual_profile.appendChild(img_individual_profile);
 	div_chat_name.innerHTML = current_talking_to;
 	div_chat_message.appendChild(div_chat_name);
@@ -215,7 +216,7 @@ Chat.prototype.showMessageToRight = function(message) {
 	let div_chat_message = makeTag('div', ['class', 'chat-box']);
 	let div_chat_name = makeTag('p', ['class', 'name-format']);
 	let p_message = makeTag('p', ['class', 'chat-format']);
-	
+
 	div_individual_profile.appendChild(img_individual_profile);
 	div_chat_name.innerHTML = user.getName();
 	p_message.innerHTML = message;
