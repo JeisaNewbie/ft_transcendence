@@ -99,7 +99,6 @@ function chattingWithFriend(id) {
 
 	div_chat_form.appendChild(div_chat_option);
 	div_chat_form.appendChild(div_chat);
-	// div_chat_form.appendChild(div_chat_input);
 
 	document.getElementById('result').appendChild(div_chat_form);
 	document.getElementById('result').appendChild(div_chat_input);
@@ -143,48 +142,34 @@ Chat.prototype.sendMessageToServer = function(message) {
 		"message": message,
 	};
 
-	console.log(data);
-
-	// data_list_live_chat = [
-	// 	{"talking_to",
-	// 	"profile",
-	// 	"last_message"},
-	// 	"talking_to",
-	// 	"profile",
-	// 	"last_message"
-	// 	"talking_to",
-	// 	"profile",
-	// 	"last_message"
-	// ]
-
-	// data_list = [{
-
-	// 	"name": user.getName(),
-	// 	"reciever": receiver,
-	// 	"message": message,
-	// },
-	// {
-
-	// 	"name": user.getName(),
-	// 	"reciever": receiver,
-	// 	"message": message,
-	// },
-	// {
-
-	// 	"name": user.getName(),
-	// 	"reciever": receiver,
-	// 	"message": message,
-	// }]
-	// postData('POST', 'localhost:8000', data)
-	// .then((data) => {this.showMessage(data);})
-	// .catch((err) => {console.log(err);});
-
+	let flag = checkScrollOrNot(document.querySelector('.chat_wrap'));
 	const get_message = message;
 	if (get_message.indexOf('left') == -1)
 		this.showMessageToRight(message);
 	else
 		this.showMessageToLeft(message);
-	scrollToNewElement();
+	scrollToNewElement(flag, document.querySelector('.chat_wrap'));
+}
+
+function checkScrollOrNot(resultElement) {
+	if (getCurrentScrollPosition(resultElement) != 0)
+		return 0;
+	return 1;
+}
+
+function getCurrentScrollPosition(resultElement) {
+	if (resultElement)
+		return resultElement.scrollHeight - resultElement.scrollTop - resultElement.clientHeight;
+}
+
+function scrollToNewElement(flag, resultElement) {
+	if (flag == 0)
+		return;
+
+	let newElement = resultElement.lastElementChild;
+	if (newElement) {
+		newElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+	}
 }
 
 Chat.prototype.showMessageToLeft = function(message) {
@@ -266,13 +251,7 @@ async function getData(method, url, data) {
 	return response.json();
 }
 
-function scrollToNewElement() {
-	var result = document.getElementById('chat');
-	var newElement = result.lastElementChild;
-	if (newElement) {
-		newElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-	}
-}
+
 
 
 
