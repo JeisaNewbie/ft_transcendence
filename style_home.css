@@ -1,6 +1,15 @@
 html,
-body {
+body,
+button {
 	all:unset;
+}
+
+button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+	background-color: white;
 }
 
 html {
@@ -32,7 +41,7 @@ html {
 
 .result {
 	display: grid;
-	padding-top: 28px;
+	padding-top: 48px;
 	grid-template-rows: 8fr 1fr;
 	width: 100%;
 	height: 100%;
@@ -78,11 +87,11 @@ html {
 
 .talking_to {
 	display: grid;
-	grid-template-columns: 1fr 4fr 5fr;
+	grid-template-columns: 5fr 5fr;
 	/* flex-wrap: wrap;
 	flex-direction: row;
 	word-break: break-all; */
-	border: 1px solid #888;
+	/* border: 1px solid #888; */
 	padding: 10px;
 	color: #555;
 }
@@ -90,51 +99,70 @@ html {
 .talking_to .name-format {
 	font-size: larger;
 	font: bolder;
+	padding-bottom: 2px;
+}
+
+.chat-message-box {
+	display: flex;
+
 }
 
 .talking_to .chat-box {
 	width: 100%;
 	word-break: break-all;
-	border: 1px solid #888;
+	border-top: #555;
+	/* border: 1px solid #888; */
 	padding: 10px;
 	color: black;
+}
+
+.talking_to .chat-box .chat-format {
+	width: 100%;
+	border-radius: 10px;
+	padding: 10px;
+	background-color: white;
 }
 
 .sender {
 	display: grid;
-	grid-template-columns: 5fr 4fr 1fr;
+	grid-template-columns: 5fr 5fr;
 	justify-content: end;
-	border: 1px solid #888;
+	/* border: 1px solid #888; */
 	padding: 10px;
 	color: #555;
 }
 
+.sender .chat-box {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	word-break: break-all;
+	border-top: #555;
+	padding: 10px;
+	color: black;
+}
+
 .sender .chat-box .name-format {
-	display: grid;
-	justify-content: end;
+	width: 100%;
+	text-align: end;
 	font-size: larger;
 	font: bolder;
+	padding-bottom: 2px;
 }
 
 .sender .chat-box .chat-format{
 	text-align: end;
-}
-
-.sender .chat-box {
-	display: grid;
-	justify-content: end;
 	width: 100%;
-	word-break: break-all;
-	border: 1px solid #888;
+	border-radius: 10px;
 	padding: 10px;
-	color: black;
+	background-color: white;
 }
 
 .chat-option {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	width: 100%;
-	height: 70px;
+	height: 50px;
 	background-color: rgb(108, 191, 227);
 	position: fixed;
 	margin-top: 2px;
@@ -181,7 +209,7 @@ html {
 	grid-template-columns: 1fr 14fr;
 	font: bold;
 	color: #888;
-	border:1px solid rgb(110, 108, 108);
+	/* border:1px solid rgb(110, 108, 108); */
 	background-color: rgb(254, 254, 254);
 	height: 80px;
 }
@@ -197,7 +225,7 @@ html {
 	display: grid;
 	height: 80px;
 	border-radius: 50%;
-	border:1px solid rgba(110, 108, 108, 0.652);
+	/* border:1px solid rgba(110, 108, 108, 0.652); */
 }
 
 .chat-room-individual .input-info {
@@ -207,7 +235,7 @@ html {
 
 .chat-room-individual .input-info>div {
 	box-sizing: border-box;
-	border:1px solid rgb(110, 108, 108);
+	/* border:1px solid rgb(110, 108, 108); */
 }
 
 .chat-room-individual .input-info .name {
@@ -236,7 +264,7 @@ html {
 }
 
 .green {
-	background-color: rgb(74, 179, 74);
+	background-color: rgb(137, 237, 137);
 }
 
 .black {

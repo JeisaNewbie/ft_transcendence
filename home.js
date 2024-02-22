@@ -36,7 +36,7 @@ function changeToLiveChat() {
 
 	clearResult();
 	// getData('GET', 'url').then((data) => {
-	// 	user = new Chat (data.name, data.talking_to, data.room);
+	// 	user = new Chat (data.name, data.talking_to(대화상대 목록 및 최근 대화 내역));
 	// 	showChattingRoom(user);
 	// })
 	showChattingRoom();
@@ -48,9 +48,15 @@ function showChattingRoom(data) {
 
 	for (var i = 0; i < user.talking_to.length; i++)
 	{
-		let button_individual_room = makeTag('button',  ['id', user.talking_to[i][0]], ['class', 'chat-room-button']);
+		let button_individual_room = makeTag('button', ['id', user.talking_to[i][0]], ['class', 'chat-room-button'], ['onclick', 'blockTalkingTo()']);
 		addListener(button_individual_room, 'click', openChattingRoom, {once : true});
 		let div_individual_room = makeTag('div', ['class', 'chat-room-individual']);
+		addListener(div_individual_room, 'mouseover', (e) => {
+			e.currentTarget.style.backgroundColor = '#dcdcde';
+		});
+		addListener(div_individual_room, 'mouseout', (e) => {
+			e.currentTarget.style.backgroundColor = 'white';
+		});
 		let div_individual_profile = makeTag('div', ['class', 'input-profile']);
 		let img_individual_profile = makeTag('img', ['src', user.talking_to[i][2]], ['alt', 'hello']);
 		div_individual_profile.appendChild(img_individual_profile);
@@ -81,9 +87,9 @@ function chattingWithFriend(id) {
 	clearResult();
 
 	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
-	let button_chat_block = makeTag('button', ['id', 'block'], ['onclick', 'blockTalkingTo()']);
-	let button_chat_non_block = makeTag('button', ['id', 'unblock'], ['onclick', 'unBlockTalkingTo()']);
-	let button_game_invite = makeTag('button', ['id', 'invite'], ['onclick', 'inviteTalkingTo()']);
+	let button_chat_block = makeTag('button', ['id', 'block'], ['class', 'chat-button'], ['onclick', 'blockTalkingTo()'], ['onmouseover', 'onMouseOver(id)'], ['onmouseout', 'onMouseOut(id)']);
+	let button_chat_non_block = makeTag('button', ['id', 'unblock'], ['class', 'chat-button'], ['onclick', 'unBlockTalkingTo()'], ['onmouseover', 'onMouseOver(id)'], ['onmouseout', 'onMouseOut(id)']);
+	let button_game_invite = makeTag('button', ['id', 'invite'], ['class', 'chat-button'], ['onclick', 'inviteTalkingTo()'], ['onmouseover', 'onMouseOver(id)'], ['onmouseout', 'onMouseOut(id)']);
 
 	button_chat_block.innerHTML = 'Block';
 	button_chat_non_block.innerHTML = 'UnBlock';
@@ -105,6 +111,7 @@ function chattingWithFriend(id) {
 	document.getElementById('result').appendChild(div_chat_form);
 	document.getElementById('result').appendChild(div_chat_input);
 	current_talking_to = id;
+	// user.room_num = user.talking_to[user.indexOf(current_talking_to)];
 	console.log(current_talking_to);
 	//1. 서버측에 이전 채팅기록 요구 및 출력
 	//getAndShowMessageHistory();
@@ -139,6 +146,8 @@ function showMessage(message) {
 function connectWithTalkingTo() {
 	socket = WebSocket(user.socket_talking_to);
 
+	// socket.onopen =
+
 	socket.onmessage = function (e) {
 
 		const message = JSON.parse(e.data);
@@ -148,11 +157,11 @@ function connectWithTalkingTo() {
 }
 
 //Live Chat
-function Chat(name, talking_to, room_num) {
+function Chat(name, talking_to) {
 	this.name = name;
 	this.talking_to = talking_to;
 	this.socket_talking_to;
-	this.room_num = room_num;
+	this.room_num;
 }
 
 Chat.prototype.init = function() {
@@ -179,8 +188,9 @@ Chat.prototype.sendMessage = function(e) {
 Chat.prototype.sendMessageToServer = function(message) {
 
 	const data = {
+		"room_num": user.room_num,
 		"name": user.getName(),
-		"current_talking_to": current_talking_to,
+		// "current_talking_to": current_talking_to,
 		"message": message,
 	};
 
@@ -236,7 +246,7 @@ Chat.prototype.showMessageToLeft = function(message) {
 	let img_individual_profile = makeTag('img', ['src', user.talking_to[0][2]], ['alt', 'hello']);
 	let div_chat_message = makeTag('div', ['class', 'chat-box']);
 	let div_chat_name = makeTag('p', ['class', 'name-format']);
-	let p_message = makeTag('p', ['class', 'format']);
+	let p_message = makeTag('p', ['class', 'chat-format']);
 
 	div_individual_profile.appendChild(img_individual_profile);
 	div_chat_name.innerHTML = current_talking_to;
@@ -244,8 +254,11 @@ Chat.prototype.showMessageToLeft = function(message) {
 	p_message.innerHTML = message; //message.message
 	div_chat_message.appendChild(p_message);
 
-	div_chat_talking_to.appendChild(div_individual_profile);
-	div_chat_talking_to.appendChild(div_chat_message);
+	let div_chat_message_box = makeTag('div', ['class', 'chat-message-box']);
+	div_chat_message_box.appendChild(div_individual_profile);
+	div_chat_message_box.appendChild(div_chat_message);
+
+	div_chat_talking_to.appendChild(div_chat_message_box);
 	div_chat_talking_to.appendChild(makeTag('div'));
 	div_chat.appendChild(div_chat_talking_to);
 
@@ -267,8 +280,11 @@ Chat.prototype.showMessageToRight = function(message) {
 	div_chat_message.appendChild(p_message);
 
 	div_chat_sender.appendChild(makeTag('div'));
-	div_chat_sender.appendChild(div_chat_message);
-	div_chat_sender.appendChild(div_individual_profile);
+
+	let div_chat_message_box = makeTag('div', ['class', 'chat-message-box']);
+	div_chat_message_box.appendChild(div_chat_message);
+	div_chat_message_box.appendChild(div_individual_profile);
+	div_chat_sender.appendChild(div_chat_message_box);
 	div_chat.appendChild(div_chat_sender);
 }
 
@@ -376,4 +392,21 @@ function changeColorToAqua() {
 	body.classList.replace(body.classList[1].toString(), 'default');
 
 	clearResult();
+}
+
+function onMouseOver(id) {
+	let nav = document.getElementById(id);
+
+	nav.style.backgroundColor = 'black';
+	nav.style.color = 'white';
+	nav.style.transitionDuration = '0.3s';
+}
+
+
+function onMouseOut(id) {
+	let nav = document.getElementById(id);
+
+	nav.style.backgroundColor = 'white';
+	nav.style.color = 'black';
+	nav.style.transitionDuration = '0.3s';
 }
