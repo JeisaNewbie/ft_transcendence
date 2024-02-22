@@ -4,7 +4,7 @@ let cur_scrollY = 0;
 let scrollYBot = 0;
 let scrollFlag = 0;
 let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3'], ['minsulee', 'hiiiiiii', './img/character2.jpg', '5'], ['semikim', 'byeeeeeee', './img/character3.jpg', ''], ['hyunwoju', 'see youuuuu', './img/character4.jpg', '']]); //서버에 채팅상대 리스트 요청;
-
+let socket;
 
 // const socket = WebSocket('');
 
@@ -12,10 +12,7 @@ let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3
 
 // 	const message = JSON.parse(e.data);
 
-// 	if (message == 'jhwang2')
-// 		showMessageToRight(message);
-// 	else
-// 		showMessageToLeft(message);
+//	showMessage(message);
 // }
 
 function addListener(elem, ev, listener, option) {
@@ -38,10 +35,14 @@ function changeToLiveChat() {
 	console.log(event_list.length);
 
 	clearResult();
-	showChatRoom();
+	// getData('GET', 'url').then((data) => {
+	// 	user = new Chat (data.name, data.talking_to, data.room);
+	// 	showChattingRoom(user);
+	// })
+	showChattingRoom();
 }
 
-function showChatRoom() {
+function showChattingRoom(data) {
 
 	let div_chat_room = makeTag('div', ['id', 'chat-room'], ['class', 'chat-room']);
 
@@ -81,7 +82,7 @@ function chattingWithFriend(id) {
 
 	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
 	let button_chat_block = makeTag('button', ['id', 'block'], ['onclick', 'blockTalkingTo()']);
-	let button_chat_non_block = makeTag('button', ['id', 'block'], ['onclick', 'nonBlockTalkingTo()']);
+	let button_chat_non_block = makeTag('button', ['id', 'unblock'], ['onclick', 'unBlockTalkingTo()']);
 	let button_game_invite = makeTag('button', ['id', 'invite'], ['onclick', 'inviteTalkingTo()']);
 
 	button_chat_block.innerHTML = 'Block';
@@ -105,14 +106,53 @@ function chattingWithFriend(id) {
 	document.getElementById('result').appendChild(div_chat_input);
 	current_talking_to = id;
 	console.log(current_talking_to);
-	user.init();
+	//1. 서버측에 이전 채팅기록 요구 및 출력
+	//getAndShowMessageHistory();
+	//2. 웹소켓 주소 연결
+	// connectWithTalkingTo();
+	user.init();//나중에 제거 (getAndShowMessageHistory에 추가됨)
 }
 
+//1. 서버측에 이전 채팅기록 요구
+function getAndShowMessageHistory() {
+	getData('GET', 'url/path/' + user.room)
+	.then((data) => {
+		user.socket_talking_to = data.socket;
+		for (var i = 0; i < data.message.length; i++)
+			showMessage(data.message[i]);
+	})
+	.then(user.init())
+	.catch((err) => {
+		console.log(err);
+	});
+}
+//2. 메세지 출력
+
+function showMessage(message) {
+	if (message.name == user.name)
+		showMessageToRight(message);
+	else
+		showMessageToLeft(message);
+}
+
+//3. 웹소켓 주소 연결
+function connectWithTalkingTo() {
+	socket = WebSocket(user.socket_talking_to);
+
+	socket.onmessage = function (e) {
+
+		const message = JSON.parse(e.data);
+
+		showMessage(message);
+	}
+}
 
 //Live Chat
-function Chat(name, talking_to) {
+function Chat(name, talking_to, room_num) {
 	this.name = name;
 	this.talking_to = talking_to;
+	this.socket_talking_to;
+	this.room_num = room_num;
 }
 
 Chat.prototype.init = function() {
@@ -126,6 +166,7 @@ Chat.prototype.sendMessage = function(e) {
 		e.preventDefault();
 
 		let msg = $('div.input-div textarea').val();
+
 		if (msg)
 			Chat.prototype.sendMessageToServer(msg);
 		else
@@ -139,7 +180,7 @@ Chat.prototype.sendMessageToServer = function(message) {
 
 	const data = {
 		"name": user.getName(),
-		"reciever": current_talking_to,
+		"current_talking_to": current_talking_to,
 		"message": message,
 	};
 
@@ -200,7 +241,7 @@ Chat.prototype.showMessageToLeft = function(message) {
 	div_individual_profile.appendChild(img_individual_profile);
 	div_chat_name.innerHTML = current_talking_to;
 	div_chat_message.appendChild(div_chat_name);
-	p_message.innerHTML = message;
+	p_message.innerHTML = message; //message.message
 	div_chat_message.appendChild(p_message);
 
 	div_chat_talking_to.appendChild(div_individual_profile);
@@ -236,6 +277,18 @@ Chat.prototype.receiveMessage = function(data) {
 
 }
 
+function blockTalkingTo() {
+	console.log('Block');
+}
+
+function unBlockTalkingTo() {
+	console.log('UnBlock');
+}
+
+function inviteTalkingTo() {
+	console.log('InviteTalkingTo');
+}
+
 Chat.prototype.clearTextArea = function() {
 	document.getElementById('text-area').value = '';
 }
@@ -256,7 +309,7 @@ async function postData(method, url, data) {
 	return response.json();
 }
 
-async function getData(method, url, data) {
+async function getData(method, url) {
 	const response = await fetch(url, {
 		method: method,
 		headers: {
