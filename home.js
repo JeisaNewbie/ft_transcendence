@@ -31,7 +31,7 @@ function changeToLiveChat() {
 
 
 	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'green');
+	body.classList.replace(body.classList[1].toString(), 'white');
 	console.log(event_list.length);
 
 	clearResult();
