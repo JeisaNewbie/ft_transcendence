@@ -187,7 +187,8 @@ html {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	background-color: #FFF;
+	box-sizing: content-box;
+	/* background-color: cornflowerblue; */
 	text-align: center;
 	border-top: 1px solid #F18C7E;
 }
@@ -245,7 +246,7 @@ html {
 	padding-top: 3px;
 }
 
-.chat-room-individual .input-info .word {
+.chat-room-individual .input-info .recent-message {
 	text-align: left;
 	padding-left: 10px;
 	padding-top: 3px;

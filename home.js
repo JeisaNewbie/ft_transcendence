@@ -19,7 +19,6 @@ function removeListner(elem, ev, listener) {
 
 
 function connectLiveChatSocket() {
-
 	clearResult();
 	clearSocket();
 
@@ -49,12 +48,7 @@ function connectLiveChatSocket() {
 				changeToLiveChat();
 				break;
 			case 'recent_message':
-				if (user.talking_to.indexOf(message.room_num) == -1) {
-					user.talking_to.push(message.new); //팔요한가?
-					addChattingRoom(message);
-				}
-				else
-					updateRecentMessage();
+				updateRecentMessage(message);
 				break;
 		}
 
@@ -75,13 +69,11 @@ function connectLiveChatSocket() {
 
 // live chat
 function changeToLiveChat() {
-
-
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'white');
 
 	clearResult(); //나중에 지움
-	clearSocket();
+	clearSocket(); //나중에 지움
 	// getData('GET', 'url').then((data) => {
 	// 	user = new Chat (data.name, data.talking_to(대화상대 목록 및 최근 대화 내역));
 	// 	showChattingRoom(user);
@@ -89,35 +81,7 @@ function changeToLiveChat() {
 	showChattingRoom();
 }
 
-function addChattingRoom(data) {
-	let div_chat_room = document.getElementById('chat-room');
-	let button_individual_room = makeTag('button', ['id', data.room_num], ['class', 'chat-room-button'], ['onclick', 'blockTalkingTo()']);
-	addListener(button_individual_room, 'click', openChattingRoom, {once : true});
-	let div_individual_room = makeTag('div', ['class', 'chat-room-individual']);
-	addListener(div_individual_room, 'mouseover', (e) => {
-		e.currentTarget.style.backgroundColor = '#dcdcde';
-	});
-	addListener(div_individual_room, 'mouseout', (e) => {
-		e.currentTarget.style.backgroundColor = 'white';
-	});
-	let div_individual_profile = makeTag('div', ['class', 'input-profile']);
-	let img_individual_profile = makeTag('img', ['src', user.talking_to[i][2]], ['alt', 'hello']);
-	div_individual_profile.appendChild(img_individual_profile);
-	let div_individual_info = makeTag('div', ['class', 'input-info']);
-	let div_individual_info_name = makeTag('div', ['class', 'name']);
-	div_individual_info_name.innerHTML = user.talking_to[i][0];
-	let div_individual_info_word = makeTag('div', ['class', 'word']);
-	div_individual_info_word.innerHTML = user.talking_to[i][1];
-	div_individual_room.appendChild(div_individual_profile);
-	div_individual_info.appendChild(div_individual_info_name);
-	div_individual_info.appendChild(div_individual_info_word);
-	div_individual_room.appendChild(div_individual_info);
-	button_individual_room.appendChild(div_individual_room);
-	div_chat_room.insertBefore(button_individual_room, div_chat_room.firstChild);
-}
-
 function showChattingRoom(data) {
-
 	let div_chat_room = makeTag('div', ['id', 'chat-room'], ['class', 'chat-room']);
 
 	for (var i = 0; i < user.talking_to.length; i++)
@@ -137,11 +101,11 @@ function showChattingRoom(data) {
 		let div_individual_info = makeTag('div', ['class', 'input-info']);
 		let div_individual_info_name = makeTag('div', ['class', 'name']);
 		div_individual_info_name.innerHTML = user.talking_to[i][0];
-		let div_individual_info_word = makeTag('div', ['class', 'word']);
-		div_individual_info_word.innerHTML = user.talking_to[i][1];
+		let div_individual_info_message = makeTag('div', ['class', 'recent-message']);
+		div_individual_info_message.innerHTML = user.talking_to[i][1];
 		div_individual_room.appendChild(div_individual_profile);
 		div_individual_info.appendChild(div_individual_info_name);
-		div_individual_info.appendChild(div_individual_info_word);
+		div_individual_info.appendChild(div_individual_info_message);
 		div_individual_room.appendChild(div_individual_info);
 		button_individual_room.appendChild(div_individual_room);
 		div_chat_room.appendChild(button_individual_room);
@@ -149,15 +113,52 @@ function showChattingRoom(data) {
 	document.getElementById('result').appendChild(div_chat_room);
 }
 
-function openChattingRoom(event) {
 
+function addChattingRoom(data) {
+	let div_chat_room = document.getElementById('chat-room');
+	let button_individual_room = makeTag('button', ['id', data.room_num], ['class', 'chat-room-button'], ['onclick', 'blockTalkingTo()']);
+	addListener(button_individual_room, 'click', openChattingRoom, {once : true});
+	let div_individual_room = makeTag('div', ['class', 'chat-room-individual']);
+	addListener(div_individual_room, 'mouseover', (e) => {
+		e.currentTarget.style.backgroundColor = '#dcdcde';
+	});
+	addListener(div_individual_room, 'mouseout', (e) => {
+		e.currentTarget.style.backgroundColor = 'white';
+	});
+	let div_individual_profile = makeTag('div', ['class', 'input-profile']);
+	let img_individual_profile = makeTag('img', ['src', user.talking_to[i][2]], ['alt', 'hello']);
+	div_individual_profile.appendChild(img_individual_profile);
+	let div_individual_info = makeTag('div', ['class', 'input-info']);
+	let div_individual_info_name = makeTag('div', ['class', 'name']);
+	div_individual_info_name.innerHTML = user.talking_to[i][0];
+	let div_individual_info_message = makeTag('div', ['class', 'recent-message']);
+	div_individual_info_message.innerHTML = user.talking_to[i][1];
+	div_individual_room.appendChild(div_individual_profile);
+	div_individual_info.appendChild(div_individual_info_name);
+	div_individual_info.appendChild(div_individual_info_message);
+	div_individual_room.appendChild(div_individual_info);
+	button_individual_room.appendChild(div_individual_room);
+	div_chat_room.insertBefore(button_individual_room, div_chat_room.firstChild);
+}
+
+function updateRecentMessage(message) {
+	if (user.talking_to.indexOf(message.room_num) == -1) {
+		user.talking_to.push(message.new); //팔요한가?
+		addChattingRoom(message);
+	} else {
+		let room = document.getElementById(message.room_num);
+		let recent_message = room.getElementsByClassName('message');
+		recent_message.innerHTML = message.message;
+	}
+}
+
+function openChattingRoom(event) {
 	event.preventDefault();
 	const button = event.currentTarget;
 	chattingWithFriend(button.id);
 }
 
 function chattingWithFriend(id) {
-
 	clearResult();
 	clearSocket();
 	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
@@ -172,7 +173,7 @@ function chattingWithFriend(id) {
 	div_chat_option.appendChild(button_chat_non_block);
 	div_chat_option.appendChild(button_game_invite);
 	let div_chat_form = makeTag('div', ['class', 'chat_wrap']);
-	let	div_chat_input = makeTag('div', ['class', 'input-div']);
+	let	div_chat_input = makeTag('div', ['class', 'chat_wrap input-div']);
 	let textarea = makeTag('textarea', ['id', 'text-area'], ['class', 'text-area'], ['placeholder', 'Press Enter for send message.']);
 
 	div_chat_input.appendChild(textarea);
@@ -188,7 +189,7 @@ function chattingWithFriend(id) {
 	// user.room_num = user.talking_to[user.indexOf(current_talking_to)];
 	console.log(current_talking_to);
 	//1. 서버측에 이전 채팅기록 요구 및 출력
-	//getAndShowMessageHistory();
+	//getAndShowMessageHistory(); //소켓으로 변경
 	//2. 웹소켓 주소 연결
 	// connectWithTalkingTo();
 	user.init();//나중에 제거 (getAndShowMessageHistory에 추가됨)
@@ -260,7 +261,6 @@ Chat.prototype.sendMessage = function(e) {
 }
 
 Chat.prototype.sendMessageToServer = function(message) {
-
 	const data = {
 		"room_num": user.room_num,
 		"name": user.getName(),
