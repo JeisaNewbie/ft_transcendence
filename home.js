@@ -1,19 +1,10 @@
-let event_list = [];
+let socket_list = [];
 let current_talking_to = 'jhwnag2';
+let client_name = 'jhwnag2';
 let cur_scrollY = 0;
 let scrollYBot = 0;
 let scrollFlag = 0;
 let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3'], ['minsulee', 'hiiiiiii', './img/character2.jpg', '5'], ['semikim', 'byeeeeeee', './img/character3.jpg', ''], ['hyunwoju', 'see youuuuu', './img/character4.jpg', '']]); //서버에 채팅상대 리스트 요청;
-let socket;
-
-// const socket = WebSocket('');
-
-// socket.onmessage = function (e) {
-
-// 	const message = JSON.parse(e.data);
-
-//	showMessage(message);
-// }
 
 function addListener(elem, ev, listener, option) {
 	if (option)
@@ -26,20 +17,103 @@ function removeListner(elem, ev, listener) {
 	elem.removeEventListener(ev, listener, false);
 }
 
+
+function connectLiveChatSocket() {
+
+	clearResult();
+	clearSocket();
+
+	const live_chat_socket = new WebSocket('ws://localhost:8000/dms/');
+
+	if (live_chat_socket) socket_list.push(live_chat_socket);
+
+	live_chat_socket.onopen = function (e) {
+
+		let message = {
+			type: "load",
+			name: client_name,
+		};
+
+		live_chat_socket.send(JSON.stringify(message));
+	};
+
+	live_chat_socket.onclose = connectLiveChatSocket;
+
+	live_chat_socket.onmessage = function (e) {
+
+		let message = JSON.parse(e.data);
+
+		switch (message.type) {
+			case 'load':
+				user = new Chat (client_name, message.talking_to);
+				changeToLiveChat();
+				break;
+			case 'recent_message':
+				if (user.talking_to.indexOf(message.room_num) == -1) {
+					user.talking_to.push(message.new); //팔요한가?
+					addChattingRoom(message);
+				}
+				else
+					updateRecentMessage();
+				break;
+		}
+
+		let resent_message = {
+			type: 'recent_message',
+			talking_to: 'semikim',
+			message: 'hello_world',
+			not_check: '5',
+			room_num: '2',
+		}
+	}
+
+	live_chat_socket.onerror = function (err) {
+		live_chat_socket.onclose = null;
+		console.log('Websoket Connect Failed: ' + err);
+	};
+}
+
 // live chat
 function changeToLiveChat() {
 
 
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'white');
-	console.log(event_list.length);
 
-	clearResult();
+	clearResult(); //나중에 지움
+	clearSocket();
 	// getData('GET', 'url').then((data) => {
 	// 	user = new Chat (data.name, data.talking_to(대화상대 목록 및 최근 대화 내역));
 	// 	showChattingRoom(user);
-	// })
+	// }) 웹소켓 방식으로 수정
 	showChattingRoom();
+}
+
+function addChattingRoom(data) {
+	let div_chat_room = document.getElementById('chat-room');
+	let button_individual_room = makeTag('button', ['id', data.room_num], ['class', 'chat-room-button'], ['onclick', 'blockTalkingTo()']);
+	addListener(button_individual_room, 'click', openChattingRoom, {once : true});
+	let div_individual_room = makeTag('div', ['class', 'chat-room-individual']);
+	addListener(div_individual_room, 'mouseover', (e) => {
+		e.currentTarget.style.backgroundColor = '#dcdcde';
+	});
+	addListener(div_individual_room, 'mouseout', (e) => {
+		e.currentTarget.style.backgroundColor = 'white';
+	});
+	let div_individual_profile = makeTag('div', ['class', 'input-profile']);
+	let img_individual_profile = makeTag('img', ['src', user.talking_to[i][2]], ['alt', 'hello']);
+	div_individual_profile.appendChild(img_individual_profile);
+	let div_individual_info = makeTag('div', ['class', 'input-info']);
+	let div_individual_info_name = makeTag('div', ['class', 'name']);
+	div_individual_info_name.innerHTML = user.talking_to[i][0];
+	let div_individual_info_word = makeTag('div', ['class', 'word']);
+	div_individual_info_word.innerHTML = user.talking_to[i][1];
+	div_individual_room.appendChild(div_individual_profile);
+	div_individual_info.appendChild(div_individual_info_name);
+	div_individual_info.appendChild(div_individual_info_word);
+	div_individual_room.appendChild(div_individual_info);
+	button_individual_room.appendChild(div_individual_room);
+	div_chat_room.insertBefore(button_individual_room, div_chat_room.firstChild);
 }
 
 function showChattingRoom(data) {
@@ -85,7 +159,7 @@ function openChattingRoom(event) {
 function chattingWithFriend(id) {
 
 	clearResult();
-
+	clearSocket();
 	let	div_chat_option = makeTag('div', ['id', 'chat-option'], ['class', 'chat-option']);
 	let button_chat_block = makeTag('button', ['id', 'block'], ['class', 'chat-button'], ['onclick', 'blockTalkingTo()'], ['onmouseover', 'onMouseOver(id)'], ['onmouseout', 'onMouseOut(id)']);
 	let button_chat_non_block = makeTag('button', ['id', 'unblock'], ['class', 'chat-button'], ['onclick', 'unBlockTalkingTo()'], ['onmouseover', 'onMouseOver(id)'], ['onmouseout', 'onMouseOut(id)']);
@@ -144,7 +218,7 @@ function showMessage(message) {
 
 //3. 웹소켓 주소 연결
 function connectWithTalkingTo() {
-	socket = WebSocket(user.socket_talking_to);
+	let socket = WebSocket(user.socket_talking_to);
 
 	// socket.onopen =
 
@@ -268,7 +342,7 @@ Chat.prototype.showMessageToRight = function(message) {
 	let div_chat = document.getElementById('chat');
 	let div_chat_sender = makeTag('div', ['class', 'sender']);
 	let div_individual_profile = makeTag('div', ['class', 'input-profile']);
-	let img_individual_profile = makeTag('img', ['src', user.talking_to[1][2]], ['alt', 'hello']);
+	let img_individual_profile = makeTag('img', ['src', './img/character5.jpg'], ['alt', 'hello']);
 	let div_chat_message = makeTag('div', ['class', 'chat-box']);
 	let div_chat_name = makeTag('p', ['class', 'name-format']);
 	let p_message = makeTag('p', ['class', 'chat-format']);
@@ -366,11 +440,19 @@ function clearResult() {
 	while (result.firstChild) result.firstChild.remove();
 }
 
+function clearSocket() {
+	for (var i = 0; i < socket_list.length; i++) {
+		socket_list[i].onclose = null;
+		socket_list[i].close();
+	}
+}
+
 function changeColorToBlue() {
 	let body = document.getElementById('body');
 	body.classList.replace(body.classList[1].toString(), 'blue');
 
 	clearResult();
+	clearSocket();
 }
 
 function changeColorToRed() {
@@ -378,6 +460,7 @@ function changeColorToRed() {
 	body.classList.replace(body.classList[1].toString(), 'red');
 
 	clearResult();
+	clearSocket();
 }
 
 function changeColorToBlack() {
@@ -385,6 +468,7 @@ function changeColorToBlack() {
 	body.classList.replace(body.classList[1].toString(), 'black');
 
 	clearResult();
+	clearSocket();
 }
 
 function changeColorToAqua() {
@@ -392,6 +476,7 @@ function changeColorToAqua() {
 	body.classList.replace(body.classList[1].toString(), 'default');
 
 	clearResult();
+	clearSocket();
 }
 
 function onMouseOver(id) {
