@@ -3,7 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="./style_home.css">
+		<link rel="stylesheet" href="./css/style_home.css">
+		<link rel="stylesheet" href="./css/style_tournament.css">
+		<link rel="stylesheet" href="./css/style_live_chat.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 		<title>Document</title>
 	</head>
@@ -11,13 +13,20 @@
 		<div id="start" class="nav">
 			<button class="flex-item" type="button" id="home" onmouseover="onMouseOver(id)" onmouseout="onMouseOut(id)" onclick="return changeColorToAqua();">Home</button>
 			<button class="flex-item" type="button" id="individual" onmouseover="onMouseOver(id)" onmouseout="onMouseOut(id)" onclick="return changeColorToBlue();">Individual</button>
-			<button class="flex-item" type="button" id="tournament" onmouseover="onMouseOver(id)" onmouseout="onMouseOut(id)" onclick="return changeColorToRed();">Tournament</button>
+			<button class="flex-item" type="button" id="tournament" onmouseover="onMouseOver(id)" onmouseout="onMouseOut(id)" onclick="return changeToTournament();">Tournament</button>
 			<button class="flex-item" type="button" id="live-chat" onmouseover="onMouseOver(id)" onmouseout="onMouseOut(id)" onclick="return changeToLiveChat();">Live Chat</button>
 			<button class="flex-item" type="button" id="log-out" onmouseover="onMouseOver(id)" onmouseout="onMouseOut(id)" onclick="return changeColorToBlack();">Log Out</button>
 		</div>
-		<div id="result" class="result">
-		</div>
-		<script id="js" src="./home.js"></script>
+		<nav id="search-bar" class="searchbar navbar-light bg-light">
+			<form id="search-form" class="form">
+				<input class="input mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+				<button id="search-bar-button" class="button" type="submit">Search</button>
+			</form>
+		</nav>
+		<div id="result" class="result"></div>
+		<script id="js" src="./js/home.js"></script>
+		<script id="js" src="./js/tournament.js"></script>
+		<script id="js" src="./js/live_chat.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 	</body>

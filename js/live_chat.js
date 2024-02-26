@@ -6,18 +6,6 @@ let scrollYBot = 0;
 let scrollFlag = 0;
 let	user = new Chat('jhwang2', [['seokjyoo', 'hello', './img/character1.jpg', '3'], ['minsulee', 'hiiiiiii', './img/character2.jpg', '5'], ['semikim', 'byeeeeeee', './img/character3.jpg', ''], ['hyunwoju', 'see youuuuu', './img/character4.jpg', '']]); //서버에 채팅상대 리스트 요청;
 
-function addListener(elem, ev, listener, option) {
-	if (option)
-		elem.addEventListener(ev, listener, option);
-	else
-		elem.addEventListener(ev, listener, false);
-}
-
-function removeListner(elem, ev, listener) {
-	elem.removeEventListener(ev, listener, false);
-}
-
-
 function connectLiveChatSocket() {
 	clearResult();
 	clearSocket();
@@ -67,19 +55,6 @@ function connectLiveChatSocket() {
 	};
 }
 
-// live chat
-function changeToLiveChat() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'white');
-
-	clearResult(); //나중에 지움
-	clearSocket(); //나중에 지움
-	// getData('GET', 'url').then((data) => {
-	// 	user = new Chat (data.name, data.talking_to(대화상대 목록 및 최근 대화 내역));
-	// 	showChattingRoom(user);
-	// }) 웹소켓 방식으로 수정
-	showChattingRoom();
-}
 
 function showChattingRoom(data) {
 	let div_chat_room = makeTag('div', ['id', 'chat-room'], ['class', 'chat-room']);
@@ -422,62 +397,7 @@ async function getData(method, url) {
 
 
 
-function makeTag(tag, attr) {
-	let new_tag = document.createElement(tag);
 
-	if (arguments.length == 2)
-		new_tag.setAttribute(attr[0], attr[1]);
-	else if (arguments.length > 2){
-		for (var i = 1; i < arguments.length; i++)
-			new_tag.setAttribute(arguments[i][0], arguments[i][1]);
-	}
-
-	return new_tag;
-}
-
-function clearResult() {
-	let result = document.getElementById('result');
-	while (result.firstChild) result.firstChild.remove();
-}
-
-function clearSocket() {
-	for (var i = 0; i < socket_list.length; i++) {
-		socket_list[i].onclose = null;
-		socket_list[i].close();
-	}
-}
-
-function changeColorToBlue() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'blue');
-
-	clearResult();
-	clearSocket();
-}
-
-function changeColorToRed() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'red');
-
-	clearResult();
-	clearSocket();
-}
-
-function changeColorToBlack() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'black');
-
-	clearResult();
-	clearSocket();
-}
-
-function changeColorToAqua() {
-	let body = document.getElementById('body');
-	body.classList.replace(body.classList[1].toString(), 'default');
-
-	clearResult();
-	clearSocket();
-}
 
 function onMouseOver(id) {
 	let nav = document.getElementById(id);
